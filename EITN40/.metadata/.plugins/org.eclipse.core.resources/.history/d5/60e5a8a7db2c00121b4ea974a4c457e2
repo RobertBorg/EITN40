@@ -1,0 +1,64 @@
+import java.io.ObjectInputStream.GetField;
+import java.lang.reflect.Array;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Random;
+
+
+public class Main {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			generateCoin(0, 0);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static ArrayList<Integer> generateCoin(long z, long numK) throws NoSuchAlgorithmException{
+		MessageDigest md5 = MessageDigest.getInstance("MD5");
+		Random rand = new Random();
+		HashMap<Long, ArrayList<Long>> buckets;
+		int t = getHighestNonZeroBit(z);
+		int bytesToGrab = t/8; // yes it has to be evenlydevidable with 8!
+		boolean hasFoundCoin = false;
+		byte[] buff = new byte[8];
+		Arrays.fill(buff, (byte)0);
+		while(!hasFoundCoin){
+			long kTest = rand.nextLong();
+			putInBytes(kTest);
+		}
+		System.out.println();
+		return null;
+	}
+	
+	private static void putInBytes(long kTest) {
+		
+		
+	}
+
+	private static long buildLongFromBytes(byte[] asd){
+		long l =0; 
+		for(int i = 0; i < 0 ; i++){
+			l = (l << 8) | asd[i];
+		}
+		return l;
+	}
+	
+	private static int getHighestNonZeroBit(long z){
+		int num = 63;
+		long i = 0;
+		while((i = z & (1 << num)) == 0){
+			num--;
+		}
+		return num;
+	}
+
+}

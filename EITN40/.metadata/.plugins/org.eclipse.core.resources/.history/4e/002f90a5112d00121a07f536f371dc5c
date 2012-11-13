@@ -1,0 +1,64 @@
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Random;
+
+
+public class Main {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			long[] z = {1};
+			generateCoin(BitSet.valueOf(z), 2);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static ArrayList<Long> generateCoin(BitSet z, long numK) throws NoSuchAlgorithmException{
+		MessageDigest md5 = MessageDigest.getInstance("MD5");
+		Random rand = new Random();
+		HashMap<long[], ArrayList<Long>> buckets = new HashMap<long[],ArrayList<Long>>();
+		final int t = z.length();
+		long numTries = 0;
+		long numAdded= 0;
+		long[] dummy = new long[1];
+		while(true){
+			final long kTest = rand.nextLong();
+			dummy[0] = kTest;
+			final BitSet value = BitSet.valueOf(dummy);
+			final BitSet digest = BitSet.valueOf(md5.digest(value.toByteArray()));
+			final int fromBit = digest.length() - t - 1;
+			final int toBit = digest.length()-1;
+			final BitSet toValidate = digest.get(fromBit,toBit ); 
+			if (toValidate.equals(z)){
+				numAdded ++;
+				final long[] index = digest.get(0, digest.length() -t -1).toLongArray();
+				ArrayList<Long> arr = buckets.get(index);
+				if( arr == null){
+					arr = new ArrayList<Long>();
+					buckets.put(index, arr);
+				}
+				arr.add(kTest);
+				if(arr.size() == numK) {
+					System.out.println("TADA");
+					return arr;
+				}
+			}
+			numTries++;
+			if( numTries % 100000 == 0){
+				System.out.println(String.format("%d %d",numTries, numAdded);
+			}
+		}
+	}
+	
+
+}

@@ -1,0 +1,47 @@
+<head>
+  <title>EITN40</title>
+</head>
+
+<body>
+  {{> haOne}}
+</body>
+
+<template name="haOne">
+	<div class="haOne">
+		{{> bOne}}
+		{{> cOne}}
+	</div>
+</template>
+<template name="bTwo">
+	<input id="bTwoNumK" type="text">
+	<input id="bTwoZ" type="text">
+	<a href="#" class="btn btn-primary">Generate MONEY</a>
+</template>
+<template name="bOne" >
+	<div class="bOne">
+		<p></p>
+		<label for="creditCardNumberIn">CCnum</label>
+		<input id="creditCardNumberIn" type="text">
+		<a class="btn" href="#">görnått</a>
+		<label for="luhnLastDidgit">luhnLastDidgit</label>
+		<input id="luhnLastDidgit" type="text">
+	</div>
+</template>
+
+<template name="cOne">
+	<div class="cOne">
+		<div class="partOne">
+			<label for="cOneR">R</label>
+			<input id="cOneR" type="text">
+			<label for="cOneX">X</label>
+			<input id="cOneX" type="text">
+			<a id="cOneGenerateRnX" class="btn" href="#" >Generate</a>
+		</div>
+		<div class="partTwo">
+			<label for="cOneR">Bank public key</label>
+			<input id="cOneBankPublicKey" type="text">
+			<a class="btn" href="#">Compute</a>
+			<input id="cOneToSendToBank" type="text">
+		</div>
+	</div>
+</template>

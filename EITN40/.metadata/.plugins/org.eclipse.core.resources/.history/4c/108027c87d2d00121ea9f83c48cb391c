@@ -1,0 +1,37 @@
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
+
+
+public class Simulation {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	private static void generateCoin(){
+		Random rand = new Random();
+		int r = rand.nextInt()%20; 
+		int x = rand.nextInt()%20; 
+		
+		BigInteger bankPublicKey = new BigInteger("123123123");
+		
+		MessageDigest md5Digest = null;
+		try {
+			md5Digest = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		byte[] hashOfX = md5Digest.digest(bankPublicKey.toByteArray());
+		
+	}
+
+}

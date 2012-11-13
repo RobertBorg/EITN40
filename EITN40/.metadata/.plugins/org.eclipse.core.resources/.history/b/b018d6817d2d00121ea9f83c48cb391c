@@ -1,0 +1,22 @@
+import java.util.Random;
+
+
+public class Simulation {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
+	private static void generateCoin(){
+		Random rand = new Random();
+		int r = rand.nextInt()%20; 
+		int x = 
+		
+		int r = Math.n
+	}
+
+}
