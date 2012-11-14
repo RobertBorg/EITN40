@@ -10,7 +10,9 @@ public class Simulation {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		System.out.println("Start");
+		generateCoin();
+		System.out.println("Stop");
 
 	}
 	
@@ -19,45 +21,104 @@ public class Simulation {
 		//BigInteger r = new BigInteger (String.valueOf(rand.nextInt()%20));
 		int r = rand.nextInt();
 		
-		int p = 5;
-		int q = 7;
-		int n = p * q;
-		int eulerN = (p-1)*(q-1);
-		int d = gcd(2, eulerN)[0];
-		while (d != 1){
-			
-		}
+		BigInteger pB = new BigInteger("61");
+		BigInteger qB = new BigInteger("53");
+		BigInteger nB = pB.multiply(qB);
+		System.out.println("N equals " + nB.intValue());
+		BigInteger eulerNB = pB.subtract(new BigInteger("1")).multiply(qB.subtract(new BigInteger("1")));
 		
-		// BigInteger x = new BigInteger (String.valueOf(rand.nextInt()%20));
+		BigInteger eB = new BigInteger("17");
+		BigInteger dB = eB.modInverse(eulerNB);
+		System.out.println("D equals " + dB.toString());
 		
-		BigInteger bankPublicKey = new BigInteger("123123123");
-		int bankPublicKeyInt = 123;
+		BigInteger message = new BigInteger("1234");
+		
+		BigInteger encryptedMessage = message.modPow(eB, nB);
+		
+		System.out.println(encryptedMessage.toString());
+		
+		BigInteger decryptedMessage = encryptedMessage.modPow(dB, nB);
+		System.out.println(decryptedMessage);
+		
 		
 		MessageDigest md5Digest = null;
 		try {
 			md5Digest = MessageDigest.getInstance("MD5");
-		} catch (NoSuchAlgorithmException e) {
+		} catch (NoSuchAlgorithmException u) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			u.printStackTrace();
 		}
 		
 		
-		byte[] hashOfX = md5Digest.digest(bankPublicKey.toByteArray());
+		//byte[] hashOfX = md5Digest.digest(bankPublicKey.toByteArray());
 		
-		BigInteger B = r.pow(bankPublicKeyInt);
+		//BigInteger B = r.pow(bankPublicKeyInt);
 		
 	}
 	
 	
-	static int[] gcd(int p, int q) {
-	      if (q == 0)
-	         return new int[] { p, 1, 0 };
-
-	      int[] vals = gcd(q, p % q);
-	      int d = vals[0];
-	      int a = vals[2];
-	      int b = vals[1] - (p / q) * vals[2];
-	      return new int[] { d, a, b };
-	   }
+	static long modInverse(long a, long n) {
+		 long i = n, v = 0, d = 1;
+		 while (a>0) {
+		  long t = i/a, x = a;
+		  a = i % x;
+		  i = x;
+		  x = d;
+		  d = v - t*x;
+		  v = x;
+		 }
+		 v %= n;
+		 if (v<0) v = (v+n)%n;
+		 return v;
+		}
+	
+	
+	static long modinv(long u, long v)
+	{
+	    long inv, u1, u3, v1, v3, t1, t3, q;
+	    long iter;
+	    /* Step X1. Initialise */
+	    u1 = 1;
+	    u3 = u;
+	    v1 = 0;
+	    v3 = v;
+	    /* Remember odd/even iterations */
+	    iter = 1;
+	    /* Step X2. Loop while v3 != 0 */
+	    while (v3 != 0)
+	    {
+	        /* Step X3. Divide and "Subtract" */
+	        q = u3 / v3;
+	        t3 = u3 % v3;
+	        t1 = u1 + q * v1;
+	        /* Swap */
+	        u1 = v1; v1 = t1; u3 = v3; v3 = t3;
+	        iter = -iter;
+	    }
+	    /* Make sure u3 = gcd(u,v) == 1 */
+	    if (u3 != 1)
+	        return 0;   /* Error: No inverse exists */
+	    /* Ensure a positive result */
+	    if (iter < 0)
+	        inv = v - u1;
+	    else
+	        inv = u1;
+	    return inv;
+	}
+	
+	 static long gcd(long a, long b){
+		 if (a == 0){
+			 return b;
+		 }
+		 while (b != 0){
+			 if (a > b){
+				 a = a - b;
+			 } else {
+				 b = b - a;
+			 }
+		 }
+		 return a;
+		 
+	 }
 
 }
