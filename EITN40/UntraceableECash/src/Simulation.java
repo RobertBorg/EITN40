@@ -10,35 +10,23 @@ public class Simulation {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Start");
 		generateCoin();
-		System.out.println("Stop");
 
 	}
 	
 	private static void generateCoin(){
 		Random rand = new Random();
-		//BigInteger r = new BigInteger (String.valueOf(rand.nextInt()%20));
-		int r = rand.nextInt();
 		
-		BigInteger pB = new BigInteger("61");
-		BigInteger qB = new BigInteger("53");
+		// Generate two big prime numbers
+		BigInteger pB = new BigInteger("977");
+		BigInteger qB = new BigInteger("983");
 		BigInteger nB = pB.multiply(qB);
-		System.out.println("N equals " + nB.intValue());
 		BigInteger eulerNB = pB.subtract(new BigInteger("1")).multiply(qB.subtract(new BigInteger("1")));
 		
-		BigInteger eB = new BigInteger("17");
-		BigInteger dB = eB.modInverse(eulerNB);
-		System.out.println("D equals " + dB.toString());
-		
-		BigInteger message = new BigInteger("1234");
-		
-		BigInteger encryptedMessage = message.modPow(eB, nB);
-		
-		System.out.println(encryptedMessage.toString());
-		
-		BigInteger decryptedMessage = encryptedMessage.modPow(dB, nB);
-		System.out.println(decryptedMessage);
+		// Choose a public key that is coprime to eulerNB. (is 3 in the example)
+		BigInteger bankPublic = new BigInteger("17");
+		// Take the modular inverse as the private key 
+		BigInteger bankPrivate = bankPublic.modInverse(eulerNB);
 		
 		
 		MessageDigest md5Digest = null;
@@ -48,77 +36,35 @@ public class Simulation {
 			// TODO Auto-generated catch block
 			u.printStackTrace();
 		}
+		// Alice generates a random R and X (coin).
+		// She also calculates the inverse of R
+		BigInteger rB = new BigInteger(10, rand);
+		BigInteger rInverse = rB.modInverse(nB);
+		BigInteger coin = new BigInteger(10, rand);
 		
+		// Hash the coin
+		byte[] hashOfX = md5Digest.digest(coin.toByteArray());
+		BigInteger hashInteger = new BigInteger(hashOfX);
 		
-		//byte[] hashOfX = md5Digest.digest(bankPublicKey.toByteArray());
+		// Sign R with banks public key
+		BigInteger signedR = rB.pow(bankPublic.intValue());
 		
-		//BigInteger B = r.pow(bankPublicKeyInt);
+		// Multiply it with the hash value of the coin to get string B to send to bank
+		BigInteger B = (signedR.multiply(hashInteger));
+		
+		System.out.println("This is what bank sees: " + B.toString());
+		
+		// Bank signs B with his private key
+		BigInteger signedB = B.modPow(bankPrivate, nB);
+		
+		System.out.println("This is what Alice gets back: " + signedB.toString());
+		
+		// Alice extracts the signed hash by using the inverse of R
+		BigInteger signedCoin = signedB.multiply(rInverse);
+		
+		System.out.println("Bob checks that " + signedCoin.modPow(bankPublic, nB) + " matches " + hashInteger.mod(nB));
 		
 	}
 	
-	
-	static long modInverse(long a, long n) {
-		 long i = n, v = 0, d = 1;
-		 while (a>0) {
-		  long t = i/a, x = a;
-		  a = i % x;
-		  i = x;
-		  x = d;
-		  d = v - t*x;
-		  v = x;
-		 }
-		 v %= n;
-		 if (v<0) v = (v+n)%n;
-		 return v;
-		}
-	
-	
-	static long modinv(long u, long v)
-	{
-	    long inv, u1, u3, v1, v3, t1, t3, q;
-	    long iter;
-	    /* Step X1. Initialise */
-	    u1 = 1;
-	    u3 = u;
-	    v1 = 0;
-	    v3 = v;
-	    /* Remember odd/even iterations */
-	    iter = 1;
-	    /* Step X2. Loop while v3 != 0 */
-	    while (v3 != 0)
-	    {
-	        /* Step X3. Divide and "Subtract" */
-	        q = u3 / v3;
-	        t3 = u3 % v3;
-	        t1 = u1 + q * v1;
-	        /* Swap */
-	        u1 = v1; v1 = t1; u3 = v3; v3 = t3;
-	        iter = -iter;
-	    }
-	    /* Make sure u3 = gcd(u,v) == 1 */
-	    if (u3 != 1)
-	        return 0;   /* Error: No inverse exists */
-	    /* Ensure a positive result */
-	    if (iter < 0)
-	        inv = v - u1;
-	    else
-	        inv = u1;
-	    return inv;
-	}
-	
-	 static long gcd(long a, long b){
-		 if (a == 0){
-			 return b;
-		 }
-		 while (b != 0){
-			 if (a > b){
-				 a = a - b;
-			 } else {
-				 b = b - a;
-			 }
-		 }
-		 return a;
-		 
-	 }
 
 }
