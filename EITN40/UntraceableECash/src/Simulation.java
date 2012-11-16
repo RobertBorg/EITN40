@@ -21,12 +21,12 @@ public class Simulation {
 		BigInteger pB = new BigInteger("977");
 		BigInteger qB = new BigInteger("983");
 		BigInteger nB = pB.multiply(qB);
-		BigInteger eulerNB = pB.subtract(new BigInteger("1")).multiply(qB.subtract(new BigInteger("1")));
+		BigInteger phi = pB.subtract(new BigInteger("1")).multiply(qB.subtract(new BigInteger("1")));
 		
 		// Choose a public key that is coprime to eulerNB. (is 3 in the example)
 		BigInteger bankPublic = new BigInteger("17");
 		// Take the modular inverse as the private key 
-		BigInteger bankPrivate = bankPublic.modInverse(eulerNB);
+		BigInteger bankPrivate = bankPublic.modInverse(phi);
 		
 		
 		MessageDigest md5Digest = null;
@@ -41,10 +41,11 @@ public class Simulation {
 		BigInteger rB = new BigInteger(10, rand);
 		BigInteger rInverse = rB.modInverse(nB);
 		BigInteger coin = new BigInteger(10, rand);
-		
+		System.out.println("This is the coin that Alice has produced: " + coin);
 		// Hash the coin
 		byte[] hashOfX = md5Digest.digest(coin.toByteArray());
 		BigInteger hashInteger = new BigInteger(hashOfX);
+		System.out.println("This is the hashed value of the coin that Alice has produced: " + hashInteger);
 		
 		// Sign R with banks public key
 		BigInteger signedR = rB.pow(bankPublic.intValue());
@@ -54,6 +55,7 @@ public class Simulation {
 		
 		System.out.println("This is what bank sees: " + B.toString());
 		
+		// Bank withdraws 1 unit of money from Alice's bank account
 		// Bank signs B with his private key
 		BigInteger signedB = B.modPow(bankPrivate, nB);
 		
@@ -61,6 +63,8 @@ public class Simulation {
 		
 		// Alice extracts the signed hash by using the inverse of R
 		BigInteger signedCoin = signedB.multiply(rInverse);
+		
+		// Alice sends the money to Bob
 		
 		System.out.println("Bob checks that " + signedCoin.modPow(bankPublic, nB) + " matches " + hashInteger.mod(nB));
 		
